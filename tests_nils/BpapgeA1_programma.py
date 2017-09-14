@@ -8,6 +8,7 @@ def dw_files():
 
     :return: Niks
     """
+    os.system('pwd')
     os.system('mkdir bestanden')
     os.system('mv downloadblast.sh ./bestanden/downloadblast.sh')
     os.system('mv bpapge_seq_a1.txt ./bestanden/bpapge_seq_a1.txt')
@@ -106,7 +107,7 @@ def get_data(database):
 
 
 def main():
-    # dw_files()
+    dw_files()
     # genen = fill_seq('raw_genen.txt')
     # eiwiten = fill_seq('raw_eiwitten.txt')
     #
