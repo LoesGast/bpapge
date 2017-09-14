@@ -9,11 +9,11 @@ def dw_files():
     :return: Niks
     """
     os.system('mkdir bestanden')
-    os.system('mv downloadblast ./bestanden/downloadblast')
-    os.system('mv bpapge_seq_a1 ./bestanden/bpapge_seq_a1')
-    subprocess.run(['bash', 'downloadblast'], cwd='bestanden')
-    os.system('mv ./bestanden/downloadblast downloadblast')
-    os.system('mv ./bestanden/bpapge_seq_a1 bpapge_seq_a1')
+    os.system('mv downloadblast.sh ./bestanden/downloadblast.sh')
+    os.system('mv bpapge_seq_a1.txt ./bestanden/bpapge_seq_a1.txt')
+    subprocess.run(['bash', 'downloadblast.sh'], cwd='bestanden')
+    os.system('mv ./bestanden/downloadblast.sh downloadblast.sh')
+    os.system('mv ./bestanden/bpapge_seq_a1.txt bpapge_seq_a1.txt')
     print('Downloading done\nBlast done')
 
 
@@ -119,10 +119,10 @@ def main():
     #     print(i, eiwiten[i])
     # test()
     # download_gb_data('./bestanden/gevonden_genen.txt', 'nucleotide')
-    nucl_data = get_data('nucleotide')
+    # nucl_data = get_data('nucleotide')
     # download_bg_data_dict(nucl_data, 'protein')
-    prot_data = get_data('protein')
-    print(prot_data)
+    # prot_data = get_data('protein')
+    # print(prot_data)
     pass
 
 
