@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Panthera_tigris_altaica/protein/protein.fa.gz -O tiger_protein.fa.gz -q
 
@@ -14,7 +15,7 @@ formatdb -i tiger_genoom.fa -p F
 blastall -p blastx -d tiger_protein.fa -i bpapge_seq_a1 -m8 >raw_eiwitten.txt
 cat raw_eiwitten.txt | awk '{if($11 == "0.0"){print $2}}' | sort | uniq | tr '|' ' ' | awk '{print $4}' > gevonden_eiwitten.txt
 
-cat tiger_protein.fa | tr "\n" "@" | sed 's/@>/\n>/g' | egrep -f gevonden_eiwitten.txt | sed 's/@/\n/g' > eiwitten_tiger.fa 
+cat tiger_protein.fa | tr "\n" "@" | sed 's/@>/\n>/g' | egrep -f gevonden_eiwitten.txt | sed 's/@/\n/g' > eiwitten_tiger.fa
 
 
 
