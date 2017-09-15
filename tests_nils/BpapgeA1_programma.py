@@ -107,13 +107,13 @@ def get_data(database):
 
 
 def main():
-    dw_files()
+    # dw_files()
     # genen = fill_seq('raw_genen.txt')
     # eiwiten = fill_seq('raw_eiwitten.txt')
     #
     #
     # for x in genen:
-    #     print(x, genen[x])
+    #    print(x, genen[x])
     # print()
     #
     # for i in eiwiten:
