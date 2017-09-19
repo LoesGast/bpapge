@@ -89,28 +89,28 @@ class Protein_gb_info():
                 data = []
                 
                 
-def seq(self):
-    self.tussen_sequentie = []
-    origin = False
-    for line in self.file:
-        if 'ORIGIN' in line:
-            origin = True
-        elif origin == True:
-            self.tussen_sequentie.append(line)
-    
+    def seq(self):
+        self.tussen_sequentie = []
+        origin = False
+        for line in self.file:
+            if 'ORIGIN' in line:
+                origin = True
+            elif origin == True:
+                self.tussen_sequentie.append(line)
 
 
-def strippen(self):
-    eiwitsequentie = ''
-    for x in self.tussen_sequentie:
-        x = x.strip()
-        for teken in x:
-            if teken in 'abcdefghijklmnopqrtsuvwxyz':
-                eiwitsequentie += teken
-    self.sequentie = eiwitsequentie
 
-    def __str__(self):
-        return self.locus
+    def strippen(self):
+        eiwitsequentie = ''
+        for x in self.tussen_sequentie:
+            x = x.strip()
+            for teken in x:
+                if teken in 'abcdefghijklmnopqrtsuvwxyz':
+                    eiwitsequentie += teken
+        self.sequentie = eiwitsequentie
+
+        def __str__(self):
+            return self.locus
 
 
 if __name__ == '__main__':
