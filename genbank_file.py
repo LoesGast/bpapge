@@ -68,6 +68,25 @@ class Protein_gb_info():
         else:
             self.ec_nummer= set(ec_nummers)
 
+    def _split_protein_regions_t(self):
+        """
+
+        :return:
+        """
+        data = []
+        region = False
+        for line in self.file:
+
+            if 'Site' in line:
+                region = True
+            if region:
+                data += [line.strip()]
+                print(line.strip())
+            if '/db_xref' in line and region:
+                #area, name, db_ref = data.pop(0).split(' ')[-1], data.pop(0).split('"')[1], data.pop().split('"')[1]
+                #self.regions[area] = [name, db_ref, ''.join(data).split('"')[1]]
+                region = False
+                data = []
 
     def _split_protein_regions(self):
         """
