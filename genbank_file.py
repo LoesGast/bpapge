@@ -106,6 +106,27 @@ class Protein_gb_info():
                 self.regions[area] = [name, db_ref, ''.join(data).split('"')[1]]
                 region = False
                 data = []
+                
+                
+def seq(self):
+    self.tussen_sequentie = []
+    origin = False
+    for line in self.file:
+        if 'ORIGIN' in line:
+            origin = True
+        elif origin == True:
+            self.tussen_sequentie.append(line)
+    
+
+
+def strippen(self):
+    eiwitsequentie = ''
+    for x in self.tussen_sequentie:
+        x = x.strip()
+        for teken in x:
+            if teken in 'abcdefghijklmnopqrtsuvwxyz':
+                eiwitsequentie += teken
+    self.sequentie = eiwitsequentie
 
     def __str__(self):
         return self.locus
