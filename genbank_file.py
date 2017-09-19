@@ -44,6 +44,24 @@ class Protein_gb_info():
         dus kan je alles uit proberen.
         :return:
         """
+    def seq(file):
+    sequentie = []
+    origin = False
+    for line in file:
+        if 'ORIGIN' in line:
+            origin = True
+        elif origin == True:
+            sequentie.append(line)
+    return sequentie
+
+    def strippen(sequentie):
+    eiwitsequentie = ''
+    for x in sequentie:
+        x = x.strip()
+        for teken in x:
+            if teken in 'abcdefghijklmnopqrtsuvwxyz':
+                eiwitsequentie += teken
+    print(eiwitsequentie)
 
     def _ec_getter(self):
         """
