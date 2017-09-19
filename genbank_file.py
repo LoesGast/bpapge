@@ -1,4 +1,4 @@
-import requests
+import requests #commandline: sudo pip3 install biopython
 import sys
 
 
@@ -100,3 +100,8 @@ if __name__ == '__main__':
         'wget "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db={0}&id={1}&rettype=gb&retmode=text" -O ./bestanden/{1}.txt -q'.format(
             'protein', name))
     test = Protein_gb_info(('bestanden/'+ name + '.txt'))
+    print(test)
+    print(test.get_name())
+    print(test.get_ec_nummer())
+    print(test.get_regions())
+    print(test)
