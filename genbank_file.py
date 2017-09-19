@@ -64,7 +64,7 @@ class Protein_gb_info():
             if 'ecNumber evidence' in line:
                 ec_nummers += [line.split('>')[1]]
         if ec_nummers == []:
-            self.ec_nummer = 'none'
+            self.ec_nummer = ['none']
         else:
             self.ec_nummer= set(ec_nummers)
 
