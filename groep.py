@@ -79,9 +79,11 @@ if __name__ == '__main__':
             with open(os.getcwd() + '/temp/protein/' + i) as file:
                 data_lijst += [Protein_gb_info(file)]
     for protein in data_lijst:
-        print(protein, protein.get_ec_nummer())
-        for region in protein.get_regions():
-            print(region, protein.get_regions()[region])
+        #print(protein, protein.get_ec_nummer())
+        #for region in protein.get_regions():
+        #    print(region, protein.get_regions()[region][1])
+
+
 
     # download_kegg_info(['6.1.1.14'])
     # data = get_pathways()
