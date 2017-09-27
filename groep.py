@@ -1,5 +1,5 @@
 import os
-from genbank_file import Protein_gb_info
+from protein_genbank_file import Protein_gb_info
 
 
 
@@ -75,13 +75,14 @@ if __name__ == '__main__':
     #download_bg_data_list(finding_CDS('nucleotide'), 'protein')
     data_lijst = []
     for i in os.listdir('./temp/protein/'):
+        print(i)
         if os.stat(os.getcwd() + '/temp/protein/' + i).st_size != 0:
             with open(os.getcwd() + '/temp/protein/' + i) as file:
                 data_lijst += [Protein_gb_info(file)]
     for protein in data_lijst:
-        #print(protein, protein.get_ec_nummer())
-        #for region in protein.get_regions():
-        #    print(region, protein.get_regions()[region][1])
+        print(protein, protein.get_ec_nummer())
+        for region in protein.get_regions():
+            print(region, protein.get_regions()[region])
 
 
 
