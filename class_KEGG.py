@@ -1,27 +1,50 @@
-lass Kegg_info():
-    def __init__(self, file_naam):
-        self.file = open(file_naam, 'r').readlines()
-        self.EC_nummer = self.EC_nummer_info()
-        self.reaction = self.reaction_info()
-        self.pathway = self.pathway_info()
+import os
 
+
+class Kegg_info():
+
+    path_name = 'temp'
+    _download_path = os.getcwd() + '/{}/pathways/'.format(path_name)
+
+    def __init__(self, ec_nummer):
+        self.ec_nummer = ec_nummer
+        self._open_or_download()
+        self.reaction = self.reaction_info()
+        self.pathways = []
+        self._get_pathways()
+
+
+    def _open_or_download(self):
+        try:
+            file = open(self._download_path + self.ec_nummer + '.txt', 'r')
+        except FileNotFoundError:
+            os.system(
+                'wget "http://rest.kegg.jp/get/{0}" -O {1}/{0}.txt -q'.format(
+                    self.ec_nummer, self._download_path))
+            file = open(self._download_path + self.ec_nummer + '.txt', 'r')
+        finally:
+            self.file = file.readlines()
+            file.close()
 
     def get_EC_nummer(self):
-        return self.EC_nummer
+        return self.ec_nummer
 
     def get_reaction(self):
         return self.reaction
 
     def get_pathway(self):
-        return self.pathway
+        return set(self.pathways)
 
-    def EC_nummer_info(self):
-        regel = ''
-        for line in self.file:
-            if 'ENTRY' in line:
-                line = line.split()
-                regel = line[1] + ' ' + line[2]
-                return regel
+    def _get_pathways(self):
+        pathway_list = []
+        for item in self.file:
+            if 'PATHWAY' in item:
+                path_positie = self.file.index(item)
+            if 'ORTHOLOGY' in item:
+                orth_positie = self.file.index(item)
+                self.pathways += self.file[path_positie:orth_positie]
+                break
+
 
     def reaction_info(self):
         regel = ''
@@ -31,51 +54,18 @@ lass Kegg_info():
                 regel = line[1:-1]
                 return ' '.join(regel)
 
-    def pathway_info(self):
-        file = self.file
-        sublijst = []
-        for line in file:
-            if 'PATHWAY' in line:
-                index = file.index(line)
-                file =  file[index:]
-                for regel in file:
-                    lijst_regel = []
-                    for x in regel:
-
-                        lijst_regel.append(x)
-
-                #         for y in lijst_regel[0:4]:
-                #             if y in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
-                #                 sublijst.append(y)
-                #             len = 0
-                #             for q in sublijst:
-                #                 len+=1
-                #             if len == 4:
-                #                 index2 = file.index(regel)
-                #                 print(index2)
-                #                 een_tellen = 0
-                #                 for p in index2:
-                #                     if p == 1:
-                #                         een_tellen +=1
-                #                         file = file[:een_tellen]
-                #
-                # print(file)
-
-
-
-
-
-
-
-
 
 if __name__ == '__main__':
-    hoi = Kegg_info('6.1.1.17.txt')
-    hoi.pathway_info()
+    os.mkdir('./temp/pathways')
+    hoi = Kegg_info('6.1.1.17')
+    print(hoi.get_EC_nummer())
+    print(hoi.get_reaction())
+    print(hoi.get_pathway())
 
 
-        #file_naam = '6.1.1.17.txt'
-        #file = openen(file_naam)
+
+
+
 
 
 

@@ -42,7 +42,6 @@ class Protein_gb_info():
         try:
             file = open(self._download_path + self.locus + '.txt', 'r')
         except FileNotFoundError:
-            pass
             os.system(
                 'wget "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db={0}&id={1}&rettype=gb&retmode=text" -O {2}{1}.txt -q'.format(
                     'protein', self.locus, self._download_path))
