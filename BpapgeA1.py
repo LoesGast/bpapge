@@ -2,6 +2,7 @@
 
 import os
 import subprocess
+import time
 
 
 
@@ -96,8 +97,17 @@ def print_in_file(filenaam, data_in_lijst):
             print(i, file=write_file)
 
 
+def main():
+    print('''
+Welkom bij het programma voor de opdracht van de hogeschool Leiden van de opleiding Bio-informatica.
+met dit programma wordt het project applied genomics in jaar 2 uitgevoerd.
+ik hoop dat u het leuk vind.
+Met vriendelijke groeten,
+Groep A1 (Shirley, Lotta, Hanna, Loes en Nils)''')
+    time.sleep(5)
+    if 'blasten.sh' in os.listdir() and 'bpapge_seq_a1.txt' in os.listdir():
+        print('yes')
+
 if __name__ == '__main__':
-    download_all_bg_files()
-    tussen_product_b_nucl()
-    tussen_product_b_prot()
+    main()
 
