@@ -12,7 +12,6 @@ def dw_files():
 
     :return: Niks
     """
-    os.system('pwd')
     os.system('mkdir bestanden')
     os.system('mv downloadblast.sh ./bestanden/downloadblast.sh')
     os.system('mv bpapge_seq_a1.txt ./bestanden/bpapge_seq_a1.txt')
@@ -98,15 +97,35 @@ def print_in_file(filenaam, data_in_lijst):
 
 
 def main():
+    temp_naam = os.getcwd() + 'temp'
     print('''
 Welkom bij het programma voor de opdracht van de hogeschool Leiden van de opleiding Bio-informatica.
 met dit programma wordt het project applied genomics in jaar 2 uitgevoerd.
 ik hoop dat u het leuk vind.
 Met vriendelijke groeten,
-Groep A1 (Shirley, Lotta, Hanna, Loes en Nils)''')
+Groep A1 (Shirley, Lotta, Hanna, Loes en Nils)\n\n\n\n''')
     time.sleep(5)
-    if 'blasten.sh' in os.listdir() and 'bpapge_seq_a1.txt' in os.listdir():
-        print('yes')
+    if 'blasten.sh' not in os.listdir() or 'bpapge_seq_a1.txt' not in os.listdir():
+        print('''er is een probleem met de files.
+blasten.sh of bpapge_seq_a1.txt zijn niet id de map''')
+        quit()
+    else:
+        while True:
+            keuze = input('''welkom u kan nu het programma uit te voeren.
+1) het uitvoeren van het programmma
+2) opties veranderen
+3) afsluiten
+maak u keuzen:\n''')
+            if keuze == '1':
+                os.system('mkdir ./bestanden')
+                os.system('mkdir ./{}'.format(temp_naam))
+                pass
+            elif keuze == '2':
+                pass
+            elif keuze == '3':
+                exit()
+            else:
+                print('wrong input, probeer opnieuw.')
 
 if __name__ == '__main__':
     main()

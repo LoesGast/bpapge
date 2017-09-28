@@ -57,7 +57,7 @@ class Protein_gb_info():
         :return:
         """
         ec_nummers = []
-        naam = '%20'.join(self.name.strip('\n').split(' '))
+        naam = '%20'.join(self.name.strip('\n').split('isoform')[0].split(' '))
         requestURL = "https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&protein={}".format(
             naam)
         r = requests.get(requestURL, headers={"Accept": "application/xml"})
