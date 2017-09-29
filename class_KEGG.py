@@ -2,17 +2,15 @@ import os
 
 
 class Kegg_info():
-
     path_name = 'temp'
     _download_path = os.getcwd() + '/{}/pathways/'.format(path_name)
 
     def __init__(self, ec_nummer):
         self.ec_nummer = ec_nummer
         self._open_or_download()
-        self.reaction = self.reaction_info()
+        self.reaction_info()
         self.pathways = []
         self._get_pathways()
-
 
     def _open_or_download(self):
         try:
@@ -33,39 +31,37 @@ class Kegg_info():
         return self.reaction
 
     def get_pathway(self):
-        return set(self.pathways)
+        return self.pathways
 
     def _get_pathways(self):
-        pathway_list = []
-        for item in self.file:
-            if 'PATHWAY' in item:
-                path_positie = self.file.index(item)
-            if 'ORTHOLOGY' in item:
-                orth_positie = self.file.index(item)
-                self.pathways += self.file[path_positie:orth_positie]
+        zone = False
+        pathways = []
+        for line in self.file:
+            if 'PATHWAY' in line:
+                zone = True
+            if zone and 'ORTHOLOGY' in line:
+                self.pathways += pathways
                 break
-
+            elif zone:
+                data = line.strip('PATHWAY').strip().split()
+                path_naam = ' '.join(data[1:])
+                pathways += [[data[0], path_naam]]
 
     def reaction_info(self):
-        regel = ''
+        zone = False
+        data = []
         for line in self.file:
             if 'REACTION' in line:
-                line = line.split()
-                regel = line[1:-1]
-                return ' '.join(regel)
+                zone = True
+            if zone and 'ALL_REAC' in line:
+                self.reaction = '\n'.join(data)
+            elif zone:
+                data += [
+                    (' '.join([line.strip('REACTION').strip()]).split('[')[0])]
 
 
 if __name__ == '__main__':
-    os.mkdir('./temp/pathways')
-    hoi = Kegg_info('6.1.1.17')
+    hoi = Kegg_info('2.5.1.17')
     print(hoi.get_EC_nummer())
     print(hoi.get_reaction())
     print(hoi.get_pathway())
-
-
-
-
-
-
-
-

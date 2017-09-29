@@ -22,23 +22,43 @@ class Protein_gb_info():
     def get_regions(self):
         """
         returnt de regions die in de genbank file staan.
-        :return: Regions Dict.
+        :return: de Regions Dict (dict)
         """
         return self.regions
 
     def get_sequence(self):
+        """
+        returnt de sequentie die in de genbank file staan.
+        :return: de sequentie in de gb_file (str)
+        """
         return self.sequence
 
     def get_sites(self):
+        """
+        returnt de sites die in de genbank file staan.
+        :return: de sites Dict (dict)
+        """
         return self.site
 
     def get_name(self):
+        """
+        returnt de naam van het eiwit die in de genbank file staan.
+        :return: de naam van het eiwit (str)
+        """
         return self.name
 
     def get_ec_nummer(self):
+        """
+        returnt de een lijst van alle ec nummers die gevonden zijn bij ebi-
+        :return: lijst met ec nummers (list)
+        """
         return self.ec_nummer
 
     def _open_or_download(self):
+        """
+
+        :return:
+        """
         try:
             file = open(self._download_path + self.locus + '.txt', 'r')
         except FileNotFoundError:
