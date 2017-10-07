@@ -12,12 +12,14 @@ class Protein_gb_info():
         self._open_or_download()
         if os.stat(self._download_path + self.locus + '.txt').st_size != 0:
             self.name = self.file[1].split(':')[-1].split('[')[0].strip(' ')
-            self.regions = {}
-            self.site = {}
+            self.regions = []
+            self.site = []
             self.sequence = ''
-            self.ec_nummer = ''
+            self.ec_nummer = []
+            self.location = ''
             self._get_all_info()
             self._ec_getter()
+
 
     def get_regions(self):
         """
@@ -47,15 +49,26 @@ class Protein_gb_info():
         """
         return self.name
 
+    def get_location(self):
+        """
+        returnt de locatie van het eiwit die in de genbank file staan.
+        :return: de locatie van het eiwit (str)
+        """
+        return self.location
+
     def get_ec_nummer(self):
         """
         returnt de een lijst van alle ec nummers die gevonden zijn bij ebi-
         :return: lijst met ec nummers (list)
         """
-        return self.ec_nummer
+        return set(self.ec_nummer)
 
     def _open_or_download(self):
         """
+        probeert eerste de file open te maken met de gegeven naam (locus/ID)
+        indien dit niet werkt wordt de file vanaf NCBI gedownload en daarna
+        wordt de file als nog geopend en wordt de gelezen file
+        in self.file geplaats
 
         :return:
         """
@@ -72,6 +85,7 @@ class Protein_gb_info():
 
     def _ec_getter(self):
         """
+        download in embl-ebi de alle info van
 
         :return:
         """
@@ -85,13 +99,16 @@ class Protein_gb_info():
             self.ec_nummer = ['none']
         else:
             responseBody = r.text.split('<')
-            for line in responseBody:
-                if 'ecNumber evidence' in line:
-                    ec_nummers += [line.split('>')[1]]
-            if ec_nummers == []:
-                self.ec_nummer = ['none']
-            else:
-                self.ec_nummer = set(ec_nummers)
+            self.info_getter(responseBody)
+
+    def info_getter(self, responsebody_2):
+        for line in responsebody_2:
+            if 'ecNumber evidence' in line:
+                self.ec_nummer += [line.split('>')[1]]
+            if '"C:' in line:
+                self.location = line.split('"')[1].split(':')[1]
+
+
 
     def _get_all_info(self):
         m_data, is_info = [], ''
@@ -109,7 +126,7 @@ class Protein_gb_info():
             area = data.pop(0).split(' ')[-1]
             name = data.pop(0).split('"')[1]
             db_ref = data.pop().split('"')[1]
-            self.regions[area] = [name, db_ref, ''.join(data).split('"')[1]]
+            self.regions += [[area, name, db_ref, ''.join(data).split('"')[1]]]
             data.clear()
             is_region = ''
 
@@ -137,7 +154,7 @@ class Protein_gb_info():
                 note = ''
             site_type = data.pop().split('"')[1]
             dat4 = ''.join(data).split('(')[-1].strip(')').strip('Site').strip()
-            self.site[dat4] = [site_type, note, dbref]
+            self.site += [[dat4, site_type, note, dbref]]
             is_site = ''
             data.clear()
         return is_site
@@ -153,6 +170,7 @@ if __name__ == '__main__':
     print(test.get_regions())
     data = test.get_sites()
     for i in data:
-        print(i, data[i])
+        print(i)
     print(test.get_sequence())
     print(test.get_ec_nummer())
+    print(test.get_location())

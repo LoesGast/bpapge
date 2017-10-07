@@ -2,17 +2,14 @@ import os
 
 
 class Nucleotide_gb_info():
-    # path_name = 'temp'
-    # _download_path = os.getcwd() + '/{}/nucleotide/'.format(path_name)
+    path_name = 'temp'
+    _download_path = os.getcwd() + '/{}/nucleotide/'.format(path_name)
+    _download_exonnen = os.getcwd() + '/{}/gene/'.format(path_name)
 
     def __init__(self, accession):
-
-        file = open(accession + '.txt', 'r')
-        self.inhoud = file.read().splitlines()
-        file.close()
-
-        self.line = ""
         self.accession = accession
+        self.file = self._open_or_download()
+        self.line = ""
         self.sequence = ""
         self.gene_name = ""
         self.cds_start = ""
@@ -20,6 +17,7 @@ class Nucleotide_gb_info():
         self.product = ""
         self.protein_id = ""
         self.gene_id = ""
+        self.exons = []
         # self.translation = ""
 
     def get_accession(self):
@@ -44,17 +42,17 @@ class Nucleotide_gb_info():
         return self.protein_id
 
 
-    # def _open_or_download(self):
-    #     try:
-    #         file = open(self._download_path + self.accession + '.txt', 'r')
-    #     except FileNotFoundError:
-    #         os.system(
-    #             'wget "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db={0}&id={1}&rettype=gb&retmode=text" -O {2}{1}.txt -q'.format(
-    #                 'nucleotide', self.accession, self._download_path))
-    #         file = open(self._download_path + self.accession + '.txt', 'r')
-    #     finally:
-    #         self.inhoud = file.read().splitlines()
-    #         file.close()
+    def _open_or_download(self):
+        try:
+            file = open(self._download_path + self.accession + '.txt', 'r')
+        except FileNotFoundError:
+            os.system(
+                'wget "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db={0}&id={1}&rettype=gb&retmode=text" -O {2}{1}.txt -q'.format(
+                    'nucleotide', self.accession, self._download_path))
+            file = open(self._download_path + self.accession + '.txt', 'r')
+        finally:
+            self.inhoud = file.read().splitlines()
+            file.close()
 
     def file_info(self):
         is_in_line_seq, is_in_line_cds = False, False
@@ -65,6 +63,7 @@ class Nucleotide_gb_info():
             self._gene_name_getter()
             self._protein_id_getter()
             self._gene_id_getter()
+        self.exon_getter()
 
     def _product_name_getter(self):
         if "/product" in self.line:
@@ -99,6 +98,23 @@ class Nucleotide_gb_info():
             self.cds_stop = self.line.split()[1].split("..")[1]
         return is_features
 
+    def exon_getter(self):
+        os.system(
+            'wget "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db={0}&id={1}&rettype=gene_table&retmode=text" -O {2}{1}.txt -q'.format(
+                'gene', self.gene_id, self._download_exonnen))
+        data, is_data, exon_region = {}, False, False
+        with open(self._download_exonnen + self.gene_id + '.txt' , 'r') as genes:
+            for line in genes.readlines():
+                if self.accession in line:
+                    exon_region = True
+                if '\n' == line:
+                    is_data = False
+                    exon_region = False
+                if '----' in line:
+                    is_data = True
+                elif is_data and exon_region:
+                    self.exons += [line.split('\t')[0].split('-')]
+
 
 if __name__ == '__main__':
 
@@ -113,6 +129,8 @@ if __name__ == '__main__':
     print('Gennaam: ' + test.get_gene_name())
     print('ProteinID: ' + test.get_protein_id())
     print('CDS (start, stop):', test.get_cds())
+    for exon in test.exons:
+        print(exon)
 
     # test.product_name_getter()
     # test.gene_name_getter()
