@@ -18,7 +18,7 @@ class Nucleotide_gb_info():
         self.protein_id = ""
         self.gene_id = ""
         self.exons = []
-        # self.translation = ""
+        self.file_info()
 
     def get_accession(self):
         return self.accession
@@ -93,7 +93,7 @@ class Nucleotide_gb_info():
     def _cds_getter(self, is_features):
         if 'FEATURES' in self.line:
             is_features = True
-        if 'CDS' in self.line and is_features:
+        if 'CDS ' in self.line and is_features:
             self.cds_start = self.line.split()[1].split("..")[0]
             self.cds_stop = self.line.split()[1].split("..")[1]
         return is_features
@@ -114,6 +114,9 @@ class Nucleotide_gb_info():
                     is_data = True
                 elif is_data and exon_region:
                     self.exons += [line.split('\t')[0].split('-')]
+
+    def __str__(self):
+        return self.accession
 
 
 if __name__ == '__main__':

@@ -4,6 +4,10 @@ import os
 import subprocess
 import time
 
+from class_KEGG import Kegg_info
+from nucleotide_genbank_file import Nucleotide_gb_info
+from protein_genbank_file import Protein_gb_info
+
 
 
 def dw_files():
@@ -36,10 +40,29 @@ def get_output_blasten():
     with open('./bestanden/output_blasten.txt') as file:
         data = file.readlines()
         for x in data:
-            z = x.split('\t')
+            z = x.strip().split('\t')
             if z[10] == '0.0':
                 lijst += [z[1].split('|')[3]]
         return set(lijst)
+
+def download_alles(genen_lijst):
+    gene_class_lijst, protein_class_lijst, kegg_class_lijst = [], [], []
+    protein_id_lijst, kegg_id_lijst = [], []
+    for gene in genen_lijst:
+        print(gene)
+        gene = Nucleotide_gb_info(str(gene))
+        protein_id_lijst += [gene.get_protein_id()]
+        gene_class_lijst += [gene]
+    for protein_id in protein_id_lijst:
+        data = Protein_gb_info(protein_id)
+        kegg_id_lijst += data.get_ec_nummer()
+        protein_class_lijst += [data]
+    for kegg in set(kegg_id_lijst):
+        kegg_class_lijst += [Kegg_info(str(kegg))]
+    return gene_class_lijst, protein_class_lijst, kegg_class_lijst
+
+
+
 
 
 
@@ -73,6 +96,7 @@ maak u keuzen:\n''')
                 os.system('mkdir {}'.format(temp_naam))
                 os.system('mkdir {}/nucleotide'.format(temp_naam))
                 os.system('mkdir {}/protein'.format(temp_naam))
+                os.system('mkdir {}/protein/kegg'.format(temp_naam))
                 os.system('mkdir {}/pathways'.format(temp_naam))
                 genenlijst = get_output_blasten()
                 print(genenlijst)
@@ -85,5 +109,6 @@ maak u keuzen:\n''')
                 print('wrong input, probeer opnieuw.')
 
 if __name__ == '__main__':
+    gene_class_lijst, protein_class_lijst, kegg_class_lijst = download_alles(get_output_blasten())
     main()
 

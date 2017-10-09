@@ -11,12 +11,14 @@ class Protein_gb_info():
         self.locus = protein_code
         self._open_or_download()
         if os.stat(self._download_path + self.locus + '.txt').st_size != 0:
+            print(self.locus)
             self.name = self.file[1].split(':')[-1].split('[')[0].strip(' ')
             self.regions = []
             self.site = []
             self.sequence = ''
             self.ec_nummer = []
             self.location = ''
+            self.db_info = ''
             self._get_all_info()
             self._ec_getter()
 
@@ -77,34 +79,54 @@ class Protein_gb_info():
         except FileNotFoundError:
             os.system(
                 'wget "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db={0}&id={1}&rettype=gb&retmode=text" -O {2}{1}.txt -q'.format(
-                    'protein', self.locus, self._download_path))
-            file = open(self._download_path + self.locus + '.txt', 'r')
+                    'protein', self.locus, self._download_path ))
+            file = open(self._download_path+ + self.locus + '.txt', 'r')
         finally:
             self.file = file.readlines()
             file.close()
 
+
+
     def _ec_getter(self):
+        try:
+            file = open(self._download_path + self.db_info + '.txt', 'r')
+        except FileNotFoundError:
+            os.system(
+                'wget "http://rest.kegg.jp/get/ptg:{0}" -O {1}/{0}.txt -q'.format(
+                    self.db_info, self._download_path + '/kegg/'))
+            file = open(self._download_path + '/kegg/' + self.db_info + '.txt', 'r')
+        finally:
+            file_kegg = file.readlines()
+            file.close()
+        for line in file_kegg:
+            if 'EC:' in line:
+                self.ec_nummer = line.split('EC:')[1].split(']')[0].split(' ')
+
+
+
+    def _data_getter(self):
         """
         download in embl-ebi de alle info van
 
         :return:
         """
-        ec_nummers = []
-        naam = '%20'.join(self.name.strip('\n').split('isoform')[0].split(' '))
+        if len(self.name.strip('\n')) > 50:
+            naam = self.name[:44]
+        else:
+            naam = self.name.strip('\n')
+        naam = '%20'.join(naam.split('isoform')[0].split(',')[0].split(' '))
+        print(naam)
         requestURL = "https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&protein={}".format(
             naam)
         r = requests.get(requestURL, headers={"Accept": "application/xml"})
         if not r.ok:
             r.raise_for_status()
-            self.ec_nummer = ['none']
         else:
             responseBody = r.text.split('<')
             self.info_getter(responseBody)
 
     def info_getter(self, responsebody_2):
         for line in responsebody_2:
-            if 'ecNumber evidence' in line:
-                self.ec_nummer += [line.split('>')[1]]
             if '"C:' in line:
                 self.location = line.split('"')[1].split(':')[1]
 
@@ -116,6 +138,8 @@ class Protein_gb_info():
             is_info = self._region_get(line, m_data, is_info)
             is_info = self._site_getter(line, m_data, is_info)
             is_info = self._sequence_getter(line, is_info)
+            if 'GeneID:' in line:
+                self.db_info = line.split('"')[1].split(':')[1]
 
     def _region_get(self, line, data, is_region):
         if 'Region' in line:
@@ -164,7 +188,7 @@ class Protein_gb_info():
 
 
 if __name__ == '__main__':
-    name = 'XP_007072912.1'
+    name = 'XP_007096051.1'
     test = Protein_gb_info(name)
 
     print(test.get_regions())
