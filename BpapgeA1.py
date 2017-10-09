@@ -98,8 +98,13 @@ maak u keuzen:\n''')
                 os.system('mkdir {}/protein'.format(temp_naam))
                 os.system('mkdir {}/protein/kegg'.format(temp_naam))
                 os.system('mkdir {}/pathways'.format(temp_naam))
-                genenlijst = get_output_blasten()
-                print(genenlijst)
+                gene_lijst, protein_lijst, kegg_lijst = download_alles(
+                    get_output_blasten())
+                print(len(gene_lijst),len(protein_lijst), len(kegg_lijst))
+                for i in protein_lijst:
+                    print(i, i.get_ec_nummer())
+                for x in kegg_lijst:
+                    print(x)
                 pass
             elif keuze == '2':
                 pass
@@ -109,6 +114,6 @@ maak u keuzen:\n''')
                 print('wrong input, probeer opnieuw.')
 
 if __name__ == '__main__':
-    gene_class_lijst, protein_class_lijst, kegg_class_lijst = download_alles(get_output_blasten())
+
     main()
 

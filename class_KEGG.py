@@ -7,9 +7,10 @@ class Kegg_info():
 
     def __init__(self, ec_nummer):
         self.ec_nummer = ec_nummer
+        self.reaction = None
+        self.pathways = []
         self._open_or_download()
         self.reaction_info()
-        self.pathways = []
         self._get_pathways()
 
     def _open_or_download(self):
@@ -58,6 +59,9 @@ class Kegg_info():
             elif zone:
                 data += [
                     (' '.join([line.strip('REACTION').strip()]).split('[')[0])]
+
+    def __str__(self):
+        return self.ec_nummer
 
 
 if __name__ == '__main__':
