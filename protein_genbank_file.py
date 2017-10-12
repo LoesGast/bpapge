@@ -11,7 +11,6 @@ class Protein_gb_info():
         self.locus = protein_code
         self._open_or_download()
         if os.stat(self._download_path + self.locus + '.txt').st_size != 0:
-            print(self.locus)
             self.name = self.file[1].split(':')[-1].split('[')[0].strip(' ')
             self.regions = []
             self.site = []
@@ -60,10 +59,18 @@ class Protein_gb_info():
 
     def get_ec_nummer(self):
         """
-        returnt de een lijst van alle ec nummers die gevonden zijn bij ebi-
+        returnt de een lijst van alle ec nummers die gevonden zijn bij
+        enbl-ebi
         :return: lijst met ec nummers (list)
         """
         return set(self.ec_nummer)
+
+    def get_location(self):
+        """
+        returnt de lokatie van waar het eiwit te vinden is in een cel
+        :return: lokatie van
+        """
+        return self.location
 
     def _open_or_download(self):
         """
@@ -71,8 +78,6 @@ class Protein_gb_info():
         indien dit niet werkt wordt de file vanaf NCBI gedownload en daarna
         wordt de file als nog geopend en wordt de gelezen file
         in self.file geplaats
-
-        :return:
         """
         try:
             file = open(self._download_path + self.locus + '.txt', 'r')

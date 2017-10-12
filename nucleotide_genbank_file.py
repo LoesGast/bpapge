@@ -43,6 +43,12 @@ class Nucleotide_gb_info():
 
 
     def _open_or_download(self):
+        """
+        probeert eerste de file open te maken met de gegeven naam (locus/ID)
+        indien dit niet werkt wordt de file vanaf NCBI gedownload en daarna
+        wordt de file als nog geopend en wordt de gelezen file
+        in self.file geplaats
+        """
         try:
             file = open(self._download_path + self.accession + '.txt', 'r')
         except FileNotFoundError:

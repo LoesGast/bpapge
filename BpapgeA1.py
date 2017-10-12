@@ -46,10 +46,24 @@ def get_output_blasten():
         return set(lijst)
 
 def download_alles(genen_lijst):
+    """
+    :param genen_lijst: een lijst met nucleotide ID's (list)
+
+    Maakt lijsten aan waar alle data inkomt te staan, hierna wordt alle
+    data verkregen door gebruik van de classes Nucleotide_gb_info,
+    Protein_gb_info en Kegg_info. deze downloaden en zorgen dat alle data
+    uit de files wordt gehaald en worden opgeslagen in de classes zelf.
+    alle data is er uit te halen met 'get'fucnties. zie de classes voor
+    meer informatie.
+
+    :return:
+    gene_class_lijst
+    protein_class_lijst
+    kegg_class_lijst
+    """
     gene_class_lijst, protein_class_lijst, kegg_class_lijst = [], [], []
     protein_id_lijst, kegg_id_lijst = [], []
     for gene in genen_lijst:
-        print(gene)
         gene = Nucleotide_gb_info(str(gene))
         protein_id_lijst += [gene.get_protein_id()]
         gene_class_lijst += [gene]
@@ -102,7 +116,7 @@ maak u keuzen:\n''')
                     get_output_blasten())
                 print(len(gene_lijst),len(protein_lijst), len(kegg_lijst))
                 for i in protein_lijst:
-                    print(i, i.get_ec_nummer())
+                    print(i, i.get_sites())
                 for x in kegg_lijst:
                     print(x)
                 pass
