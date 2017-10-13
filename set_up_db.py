@@ -15,10 +15,10 @@ def drop_tables():
 def create_tables():
     sql1 = """
            CREATE TABLE gene (
-               id          CHAR(9) NOT NULL UNIQUE,
+               id          CHAR(14) NOT NULL UNIQUE,
                name        VARCHAR(100) NOT NULL,
-               accession   CHAR(14) NOT NULL UNIQUE,
-               n_sequence  VARCHAR NOT NULL,
+               accession   CHAR(8) NOT NULL UNIQUE,
+               n_sequence  VARCHAR(1100) NOT NULL,
                cds_start   INT NOT NULL,
                cds_stop    INT NOT NULL,
                protein_id  CHAR(14) NOT NULL UNIQUE
@@ -26,9 +26,9 @@ def create_tables():
 
     sql2 = """
                    CREATE TABLE exon (
-                       start   CHAR(14) NOT NULL,
-                       id      CHAR(14) NOT NULL,
-                       gene_id CHAR(9) NOT NULL
+                       start   INT NOT NULL,
+                       id      INT NOT NULL,
+                       gene_id CHAR(14) NOT NULL
                        );"""
 
     sql3 = """
@@ -36,38 +36,43 @@ def create_tables():
                id          CHAR(14) NOT NULL,
                name        VARCHAR(100) NOT NULL,
                p_sequence  VARCHAR(2000) NOT NULL,
-               ec_number   VARCHAR(14) NOT NULL
+               ec_number   VARCHAR(16) NOT NULL
                );"""
 
     sql4 = """
                CREATE TABLE region (
                    protein_id  CHAR(14) NOT NULL,
-                   area        VARCHAR(20) NOT NULL
+                   area        INT NOT NULL
                    );"""
 
     sql5 = """
                CREATE TABLE sites (
                    protein_id  CHAR(14) NOT NULL,
-                   sites_order CHAR(14) NOT NULL
+                   sites_order INT NOT NULL
                    );"""
 
     sql6 = """
                    CREATE TABLE ec_number_protein (
                        protein_id   CHAR(14) NOT NULL,
-                       ec_nummer    CHAR(14) NOT NULL
+                       ec_nummer    VARCHAR(16) NOT NULL
                        );"""
 
     sql7 = """
                    CREATE TABLE ec_pathway (
-                       ec_number       CHAR(14) NOT NULL,
-                       pathway_number  CHAR(14) NOT NULL
+                       ec_number       VARCHAR(16) NOT NULL,
+                       pathway_number  CHAR(8) NOT NULL
                        );"""
+    
+        # Moet pathway in de tabel PATHWAY geen pahtway_number zijn??
+        # We hebben in 2 tabellen 2 keer id gebruikt dat iets anders betekend zullen we er p_id en g_id van maken?
+        # In tabel EXON staat gene_id en id maar je gebruikt ook protein_id in bv TABLE ec_number_protein
+        # De datatypes van alle id's kloppen nog niet
 
     sql8 = """
                    CREATE TABLE pathway (
-                       pathway     CHAR(14) NOT NULL,
-                       reaction    CHAR(14) NOT NULL,
-                       pathways    CHAR(9) NOT NULL
+                       pathway     VARCHAR(50) NOT NULL, #als dit pathway_number wordt CHAR(8) van maken graag.
+                       reaction    VARCHAR(150) NOT NULL,
+                       pathways    VARCHAR(50) NOT NULL
                        );"""
 
     table_list = [sql1, sql2, sql3, sql4, sql5, sql6, sql7, sql8]
