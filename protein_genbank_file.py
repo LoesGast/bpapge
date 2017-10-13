@@ -3,7 +3,7 @@ import requests
 
 
 class Protein_gb_info():
-    # global variables
+    # global variables voor het downloaden van de files
     path_name = 'temp'
     _download_path = os.getcwd() + '/{}/protein/'.format(path_name)
 
@@ -93,6 +93,11 @@ class Protein_gb_info():
 
 
     def _ec_getter(self):
+        """
+        downlaod de Kegg database file van de protein en
+         pakt hieruit de EC nummer.
+        :return: None
+        """
         try:
             file = open(self._download_path + self.db_info + '.txt', 'r')
         except FileNotFoundError:
@@ -111,7 +116,8 @@ class Protein_gb_info():
 
     def _data_getter(self):
         """
-        download in embl-ebi de alle info van
+        vraagt in embl-ebi alle info van de protein in xml text. en gaat
+        hier veder me werken met de functie: info_getter.
 
         :return:
         """
@@ -131,6 +137,12 @@ class Protein_gb_info():
             self.info_getter(responseBody)
 
     def info_getter(self, responsebody_2):
+        """
+        :param responsebody_2: lijst van de xml uitkomsten van
+            data_getter (lijst).
+            zoekt in de lijst naar specifieke data.
+        :return: None
+        """
         for line in responsebody_2:
             if '"C:' in line:
                 self.location = line.split('"')[1].split(':')[1]
@@ -138,6 +150,11 @@ class Protein_gb_info():
 
 
     def _get_all_info(self):
+        """
+        Loopt door de genebank file en haalt hier alle nodig informatie uit
+        met behulp van functies die als if-statements fungeren.
+        :return:
+        """
         m_data, is_info = [], ''
         for line in self.file:
             is_info = self._region_get(line, m_data, is_info)
@@ -147,6 +164,21 @@ class Protein_gb_info():
                 self.db_info = line.split('"')[1].split(':')[1]
 
     def _region_get(self, line, data, is_region):
+        """
+        :param line: line van de file (str)
+        :param data: lijst met alle data indien een functie data
+         is aan het sparen (lijst)
+        :param is_region: kijkt of de lijn de in de functie komt in
+         een regio stuck zit (boolean)
+
+        kijkt of in een line het word "Region" zit en dus data wat moet
+         worden gesplit worden. Hierna wordt de data gespaard totdat het eind
+         deel van de regio data wordt gededecteerd. als het einde is gekomen
+         van de regio wordt dit opgeslagen in een lijst in een lijst. en wordt
+         de regio uit gezet tot dat deze weer wordt ontdekt wordt.
+
+        :return: None
+        """
         if 'Region' in line:
             is_region = 'Region'
         if 'Region' == is_region:
@@ -162,6 +194,15 @@ class Protein_gb_info():
         return is_region
 
     def _sequence_getter(self, line, is_origin):
+        """
+        :param line: line van de file (str).
+        :param is_origin: kijkt of de lijn in de sequentie regio zit (boolean).
+
+        loopt door de lijst en als de line in sequentie regio zit worden alle
+         letters toegevoegd aan de sequentie.
+
+        :return: None
+        """
         if 'ORIGIN' in line:
             is_origin = 'seq'
         elif is_origin == 'seq':
@@ -171,6 +212,22 @@ class Protein_gb_info():
         return is_origin
 
     def _site_getter(self, line, data, is_site):
+        """
+        :param line: line van de file (str)
+        :param data: lijst met alle data indien een functie data
+            is aan het sparen (lijst)
+        :param is_region: kijkt of de lijn de in de functie komt in
+            een regio stuck zit (boolean)
+
+        kijkt of in een line het word "Site" zit en dus data wat moet
+         worden gesplit worden. Hierna wordt de data gespaard totdat het eind
+         deel van de site data wordt gededecteerd. als het einde is gekomen
+         van de site-regio wordt dit opgeslagen in een lijst en toegevogd
+         aan de lijst van sites. en wordt
+         de regio uit gezet tot dat deze weer wordt ontdekt wordt.
+
+        :return: None
+        """
         if 'Site' in line:
             is_site = 'Site'
         if is_site == 'Site':
@@ -189,6 +246,10 @@ class Protein_gb_info():
         return is_site
 
     def __str__(self):
+        """
+        returnd de naam van het eiwit als deze klas wordt geprint
+        :return:
+        """
         return self.locus
 
 
